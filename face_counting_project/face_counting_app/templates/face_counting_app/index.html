@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Counting in Images</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #container {
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        #uploadForm {
+            margin-top: 20px;
+        }
+
+        #imageInput {
+            display: none;
+        }
+
+        #uploadLabel, #detectButton {
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        #uploadLabel:hover, #detectButton:hover {
+            background-color: #2980b9;
+        }
+
+        #result {
+            display: none;
+            margin-top: 20px;
+        }
+
+        #detectedFaces {
+            max-width: 100%;
+            max-height: 400px;
+            margin-top: 10px;
+        }
+
+        #previewImage {
+            max-width: 100%;
+            max-height: 300px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1> Face Counting in Images</h1>
+        
+        <form id="uploadForm" action="{% url 'count_faces' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="imageInput" id="uploadLabel">Choose Image</label>
+            <input type="file" id="imageInput" name="image" accept="image/*" onchange="previewImage()">
+            <button type="submit" id="detectButton">Detect Faces</button>
+        </form>
+
+        <div id="result">
+            <h2>Detected Faces</h2>
+            <div id="detectedFaces"></div>
+        </div>
+
+        <div id="previewImage"></div>
+    </div>
+
+    <script>
+        function previewImage() {
+            const input = document.getElementById('imageInput');
+            const preview = document.getElementById('previewImage');
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    preview.innerHTML = '<img src="' + e.target.result + '" alt="Preview">';
+                    document.getElementById('result').style.display = 'block';
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+</body>
+</html>
